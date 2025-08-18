@@ -170,12 +170,28 @@ valorant-fantasy-team-builder/
 5. **Utility Scripts**: Add to `scripts/` directory
 
 ## License
-
-[Add your license here]
+This project is licensed under the MIT License.  
+Copyright (c) 2025 David Son.  
+See the [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
-[Add contribution guidelines here]
+Thanks for helping improve Fantasy Valorant! Here’s the quickest way to contribute:
+
+### 1) Report issues / request features
+- Open a GitHub Issue with a clear title and steps to reproduce (if it’s a bug).
+
+### 2) Set up locally
+```bash
+# Windows (PowerShell)
+py -m venv venv && venv\Scripts\activate
+# macOS/Linux
+python3 -m venv venv && source venv/bin/activate
+
+pip install -r requirements.txt
+cp env.example .env   # Windows: copy env.example .env
+uvicorn app.server:app --reload
+# visit http://127.0.0.1:8000
 =======
 # Valorant Parlay — Fantasy Team Builder
 
