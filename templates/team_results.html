@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Results</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <div class="max-w-3xl mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-4">Your Fantasy Team Results</h1>
+    <div id="teamInfo" class="mb-6"></div>
+    <div id="playerTable"></div>
+    <div id="teamTotal" class="mt-6 text-xl font-bold"></div>
+    <a href="team_builder.html" class="mt-8 inline-block bg-blue-600 px-6 py-2 rounded font-bold">Back to Team Builder</a>
+  </div>
+  <script>
+    // --- CONFIG ---
+    const playerStatsFiles = [
+      "../json/vct_2025_china_stage_2_ppg_cost.json",
+      "../json/vct_2025_americas_stage_2_ppg_cost.json",
+      "../json/vct_2025_emea_stage_2_ppg_cost.json",
+      "../json/vct_2025_pacific_stage_2_ppg_cost.json"
+      // Add more PPG/cost JSON file paths here
+    ];
+
+    // --- PARSE URL ---
+    function getQueryParams() {
+      const params = {};
+      window.location.search.substring(1).split("&").forEach(pair => {
+        const [key, value] = pair.split("=");
+        params[decodeURIComponent(key)] = decodeURIComponent(value || "");
+      });
+      return params;
+    }
+    const params = getQueryParams();
+    const teamName = params.teamName || "(No Name)";
+    const playerNames = (params.players || "").split(",").map(s => s.trim()).filter(Boolean);
+
+    document.getElementById("teamInfo").innerHTML = `<div class="text-xl font-semibold">Team: <span class="text-blue-400">${teamName}</span></div>`;
+
+    // --- LOAD PLAYER DATA ---
+    const cacheBust = `?v=${Date.now()}`;
+    Promise.all(playerStatsFiles.map(path => fetch(path + cacheBust).then(res => res.json())))
+      .then(jsons => {
+        // Merge all stats into one dict by name
+        const statsDict = {};
+        jsons.forEach(data => {
+          (Array.isArray(data) ? data : Object.values(data)).forEach(p => {
+            statsDict[p.name] = p;
+          });
+        });
+        // Build table
+        let totalPoints = 0;
+        let table = `<table class="w-full text-left bg-gray-800 rounded"><thead><tr><th class="p-2">Player</th><th class="p-2">Games Played</th><th class="p-2">Total Points</th><th class="p-2">PPG</th></tr></thead><tbody>`;
+        playerNames.forEach(name => {
+          const p = statsDict[name];
+          if (p) {
+            table += `<tr><td class="p-2 font-bold">${p.name}</td><td class="p-2">${p.games_played ?? '-'}</td><td class="p-2">${p.total_points ?? '-'}</td><td class="p-2">${typeof p.ppg === 'number' ? p.ppg.toFixed(2) : '-'}</td></tr>`;
+            totalPoints += p.total_points || 0;
+          } else {
+            table += `<tr><td class="p-2 font-bold text-red-400">${name}</td><td class="p-2" colspan="3">Not found in stats</td></tr>`;
+          }
+        });
+        table += `</tbody></table>`;
+        document.getElementById("playerTable").innerHTML = table;
+        document.getElementById("teamTotal").textContent = `Total Team Points: ${totalPoints}`;
+      })
+      .catch(err => {
+        document.getElementById("playerTable").innerHTML = `<div class='text-red-400'>Failed to load player stats.</div>`;
+        console.error("Error loading player stats:", err);
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.env
+
+# Local runtime data / outputs (generated)
+data/
+json/
+player_display.json
+
+# Selenium driver (if present)
+chromedriver-win64/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

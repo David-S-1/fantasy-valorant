@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Players</title>
+    </head>
+    <form method="POST" action="/submit_players">
+        {% for player, org in players %}
+        <label>
+            <input type="checkbox" name="player_ids" value="{{ player }}">
+            {{ org }} — {{ player }}
+        </label><br>
+        {% endfor %}
+
+        <input type="submit" value="Submit Picks">
+    </form>
+</html>

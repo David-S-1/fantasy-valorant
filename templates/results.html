@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Picks</title>
+</head>
+<body>
+  <h1>Your Selected Matches</h1>
+
+  {% if picks %}
+    <ul>
+      {% for match_url in picks %}
+        <li><a href="{{ match_url }}">{{ match_url }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>You didn’t pick any matches.</p>
+  {% endif %}
+</body>
+</html>
