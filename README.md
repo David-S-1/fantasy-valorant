@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Valorant Fantasy Team Builder
 
 A web application for building and managing Valorant fantasy teams using real tournament data from VLR.gg.
